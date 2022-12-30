@@ -374,11 +374,11 @@
 	"dependencies" : 
 	[
 		{
-			"id" : "CloveceNehnevajSa_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
-		},
-		{
 			"backtrace" : 0,
 			"id" : "CloveceNehnevajSa_autogen::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "CloveceNehnevajSa_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "CloveceNehnevajSa::@6890427a1f51a3e7e1df",
@@ -524,29 +524,29 @@
 		{
 			"backtrace" : 4,
 			"compileGroupIndex" : 0,
-			"path" : "main.cpp",
+			"path" : "src/main.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 4,
 			"compileGroupIndex" : 0,
-			"path" : "mainwindow.cpp",
+			"path" : "src/gui/main/mainwindow.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 4,
-			"path" : "mainwindow.h",
+			"path" : "src/gui/main/mainwindow.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 4,
-			"path" : "mainwindow.ui",
+			"path" : "src/gui/main/mainwindow.ui",
 			"sourceGroupIndex" : 2
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "cmake-build-debug/CloveceNehnevajSa_autogen/include/ui_mainwindow.h",
+			"path" : "cmake-build-debug/CloveceNehnevajSa_autogen/include/src/gui/main/ui_mainwindow.h",
 			"sourceGroupIndex" : 1
 		},
 		{
