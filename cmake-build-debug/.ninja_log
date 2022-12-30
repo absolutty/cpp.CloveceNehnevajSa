@@ -1,0 +1,19 @@
+# ninja log v5
+3	2240	6941228031264640	CloveceNehnevajSa_autogen/timestamp	578f0763eb5715a5
+3	2240	6941228031264640	CloveceNehnevajSa_autogen/mocs_compilation.cpp	578f0763eb5715a5
+3	2240	6941228031264640	D:/zadania/pos/CloveceNehnevajSa/CloveceNehnevajSa/cmake-build-debug/CloveceNehnevajSa_autogen/timestamp	578f0763eb5715a5
+3	2240	6941228031264640	D:/zadania/pos/CloveceNehnevajSa/CloveceNehnevajSa/cmake-build-debug/CloveceNehnevajSa_autogen/mocs_compilation.cpp	578f0763eb5715a5
+2241	4193	6941228053054202	CMakeFiles/CloveceNehnevajSa.dir/CloveceNehnevajSa_autogen/mocs_compilation.cpp.obj	9a2fc048fc596887
+2246	4248	6941228053622659	CMakeFiles/CloveceNehnevajSa.dir/main.cpp.obj	c1febc507a927e19
+2250	4438	6941228055522412	CMakeFiles/CloveceNehnevajSa.dir/mainwindow.cpp.obj	960ca3f392ca99de
+4438	4684	6941228057931965	CloveceNehnevajSa.exe	8ae373e3e881cd75
+1	53	0	CMakeFiles/clean.additional	ab047c29539f7fa3
+53	66	0	clean	bd9185b756e0be50
+5	1553	6941233808706463	CloveceNehnevajSa_autogen/timestamp	578f0763eb5715a5
+5	1553	6941233808706463	CloveceNehnevajSa_autogen/mocs_compilation.cpp	578f0763eb5715a5
+5	1553	6941233808706463	D:/zadania/pos/CloveceNehnevajSa/CloveceNehnevajSa/cmake-build-debug/CloveceNehnevajSa_autogen/timestamp	578f0763eb5715a5
+5	1553	6941233808706463	D:/zadania/pos/CloveceNehnevajSa/CloveceNehnevajSa/cmake-build-debug/CloveceNehnevajSa_autogen/mocs_compilation.cpp	578f0763eb5715a5
+1553	4319	6941233839250134	CMakeFiles/CloveceNehnevajSa.dir/CloveceNehnevajSa_autogen/mocs_compilation.cpp.obj	9a2fc048fc596887
+1558	4331	6941233839369829	CMakeFiles/CloveceNehnevajSa.dir/main.cpp.obj	c1febc507a927e19
+1563	4462	6941233840671537	CMakeFiles/CloveceNehnevajSa.dir/mainwindow.cpp.obj	960ca3f392ca99de
+4462	4726	6941233843284730	CloveceNehnevajSa.exe	8ae373e3e881cd75
