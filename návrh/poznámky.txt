@@ -1,0 +1,25 @@
+Začína to vyskakovacím okienkom že koľko hráčov bude hrať.
+Ďalšie okienko kt. sa spýta na mená hráčov a príslušné dropdowny.
+
+Šírka a výška hraciej plochy je 1100px. Zmeny veľkostí okna sú zakázané.
+
+HraciaPlocha:
+    vykresluje prvky na danom pozadí, nevie o ničom inom. Iba hlúpo vykresľuje.
+
+Policko:
+    Každé políčko bude obsahovať svoje súradnice. Tie mu budú musieť byť pridelené pri jeho vytvaraní.
+
+Hrac:
+    Zoznam panacikov, zoznam zaciatocnych domcekov, zoznam koncovych domcekov.
+    Vychodiskova poloha hraca podla jeho farby.
+
+Panacik:
+    Ma pocitadlo, kt. určí že ako ďaleko sa nachádza od domčeka. Keď dosiahne danú hodnotu, vtedy sa bude dostávať doň.
+
+Kocka:
+    Jednoduchy random od 1 po 6
+
+Hra:
+    Zoznam políčok, kt. súradnice sa budú musieť vygenerovať pri spustení hry / sa zadajú na tvrdu.
+    Zoznam Hráčov
+
