@@ -15,8 +15,7 @@ public:
                                              "User name:", QLineEdit::Normal,
                                              QDir::home().dirName(), &ok);
 
-        text.toInt(&ok);
-
+        text.toInt(&ok); //is it int validation
         if (ok && !text.isEmpty()) {
             *resultData = new QString(text);
         } else {
