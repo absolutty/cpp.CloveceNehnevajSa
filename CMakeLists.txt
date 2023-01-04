@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+link_libraries(ws2_32 wsock32)
+
 find_package(Qt5 COMPONENTS
         Core
         Gui
@@ -23,6 +25,16 @@ target_link_libraries(CloveceNehnevajSa
         Qt5::Gui
         Qt5::Widgets
         )
+
+add_executable(server
+        src/communication/server/Server.cpp
+        src/communication/server/Server.h)
+
+add_executable(client
+        src/communication/client/Client.cpp)
+
+target_link_libraries(server pthread m)
+target_link_libraries(client pthread m)
 
 if (WIN32)
     set(DEBUG_SUFFIX)
