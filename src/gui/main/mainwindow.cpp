@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 
     delete string;
+    connect(ui->actionCreate_new_game, SIGNAL(triggered()), this, SLOT(exit()));
 }
 
 MainWindow::~MainWindow()
@@ -25,3 +26,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+int MainWindow::exit() {
+    printf("Exiting application");
+    return 0;
+}
