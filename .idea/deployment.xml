@@ -2,13 +2,12 @@
 <project version="4">
   <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="Remote Host (a279c581-711e-4cff-b53b-02698e8c97d2)">
+      <paths name="Remote Host (c9b31475-4481-4096-9e91-6085ea3f45f3)">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/tmp.wSbKf8BbQn" local="$PROJECT_DIR$" />
+            <mapping deploy="/tmp/tmp.Ssdpn34CI7" local="$PROJECT_DIR$" />
           </mappings>
           <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
             <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
           </excludedPaths>
         </serverdata>
