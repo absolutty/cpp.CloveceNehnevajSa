@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="main-client  | player-2" type="CMakeRunConfiguration" factoryName="Application" folderName="players" singleton="false" PROGRAM_PARAMS="localhost 10256" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="CloveceNehnevajSa" TARGET_NAME="main-client" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="CloveceNehnevajSa" RUN_TARGET_NAME="main-client">
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
