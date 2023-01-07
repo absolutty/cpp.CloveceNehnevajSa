@@ -29,6 +29,76 @@ HraciaPlocha::~HraciaPlocha() {
     delete hraciePole;
 }
 
+bool HraciaPlocha::tah(char *figurka, int posun) {
+    bool tahUspesny = false;
+    int cisloHraca = getCisloHracaPodlaFarby(figurka[0]);
+    if (cisloHraca == -1) return false;
+    int cisloFigurky = atoi(&figurka[1]);
+    int poziciaFigurky = hraci[cisloHraca]->getPanak(cisloFigurky-1);
+    if(poziciaFigurky>=100) {
+        if (posun < 6) {
+            return false;
+        }
+        if (hraciePole[(cisloHraca*10+30)%40]->getObsah()[0] == ' ') {
+            hraci[cisloHraca]->setPanak(cisloFigurky-1,(cisloHraca*10+30)%40);
+            hraci[cisloHraca]->getZaciatokDomcekAt(cisloFigurky-1)->getObsah()[0] = ' ';
+            hraci[cisloHraca]->getZaciatokDomcekAt(cisloFigurky-1)->getObsah()[1] = ' ';
+            hraciePole[(cisloHraca*10+30)%40]->getObsah()[0] = farbyHracov[cisloHraca];
+            hraciePole[(cisloHraca*10+30)%40]->getObsah()[1] = '0'+cisloFigurky;
+        }
+//    } else if (/*poziciaFigurky>=((cisloHraca*10+30)%40) &&*/ poziciaFigurky>=(cisloHraca*10+30-posun)%40) {
+    } else if (poziciaFigurky>(cisloHraca*10+29)%40-posun && poziciaFigurky<(cisloHraca*10+29)%40+1) {
+        hraciePole[poziciaFigurky]->getObsah()[0] = ' ';
+        hraciePole[poziciaFigurky]->getObsah()[1] = ' ';
+        for (int i = 3; i >= 0; --i) {
+            if (hraci[cisloHraca]->getDomcetAt(i)->getObsah()[0] == ' ') {
+                hraci[cisloHraca]->getDomcetAt(i)->getObsah()[0] = farbyHracov[cisloHraca];
+                hraci[cisloHraca]->getDomcetAt(i)->getObsah()[1] = '0'+cisloFigurky;
+                hraci[cisloHraca]->setPanak(cisloFigurky-1, -1);
+                break;
+            }
+        }
+    } else {
+        if (hraciePole[(poziciaFigurky+posun)%40]->getObsah()[0] != ' ') {
+            int hrac = getCisloHracaPodlaFarby(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[0]);
+            hraci[hrac]->getZaciatokDomcekAt(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1)->getObsah()[0] = hraciePole[(poziciaFigurky+posun)%40]->getObsah()[0];
+            hraci[hrac]->getZaciatokDomcekAt(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1)->getObsah()[1] = hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1];
+            hraci[hrac]->setPanak(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1,100+hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1);
+        }
+        hraciePole[(poziciaFigurky+posun)%40]->getObsah()[0] = farbyHracov[cisloHraca];
+        hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1] = '0'+cisloFigurky;
+        hraciePole[poziciaFigurky]->getObsah()[0] = ' ';
+        hraciePole[poziciaFigurky]->getObsah()[1] = ' ';
+        hraci[cisloHraca]->setPanak(cisloFigurky-1, (poziciaFigurky+posun)%40);
+    }
+    return true;
+}
+
+int HraciaPlocha::getCisloHracaPodlaFarby(char farba) {
+    int cisloHraca = 0;
+    if(farba == farbyHracov[0]) {
+        cisloHraca = 0;
+    } else if (farba == farbyHracov[1]) {
+        cisloHraca = 1;
+    } else if (farba == farbyHracov[2]) {
+        cisloHraca = 2;
+    } else if (farba == farbyHracov[3]) {
+        cisloHraca = 3;
+    } else {
+        cisloHraca = -1;
+    }
+    return cisloHraca;
+}
+
+bool HraciaPlocha::skoncilHrac(int hrac) {
+    for (int i = 0; i < 4; ++i) {
+        if (hraci[hrac]->getDomcetAt(i)->getObsah()[0] == ' ') {
+            return false;
+        }
+    }
+    return true;
+}
+
 void HraciaPlocha::vykresli() {
     printf("┌────┬────┐         ┌────┬────┬────┐         ┌────┬────┐\n"
            "│ %s │ %s │         │ %s │ %s │ %s │ ↓       │ %s │ %s │\n" // riadok 1
@@ -52,7 +122,7 @@ void HraciaPlocha::vykresli() {
            "│ %s │ %s │         │ %s ║ %s ║ %s │         │ %s │ %s │\n" // riadok 10
            "├────┼────┤         ├────╚────╝────┤         ├────┼────┤\n"
            "│ %s │ %s │       ↑ │ %s │ %s │ %s │         │ %s │ %s │\n" // riadok 11
-           "└────┴────┘         └────┴────┴────┘         └────┴────┘",
+           "└────┴────┘         └────┴────┴────┘         └────┴────┘\n",
            // riadok 1
            hraci[0]->getZaciatokDomcekAt(0)->getObsah(),
            hraci[0]->getZaciatokDomcekAt(1)->getObsah(),
@@ -106,7 +176,7 @@ void HraciaPlocha::vykresli() {
            hraciePole[26]->getObsah(),
            hraciePole[25]->getObsah(),
            hraciePole[24]->getObsah(),
-           hraci[1]->getDomcetAt(3)->getObsah(),
+           hraci[3]->getDomcetAt(3)->getObsah(),
            hraciePole[14]->getObsah(),
            hraciePole[13]->getObsah(),
            hraciePole[12]->getObsah(),

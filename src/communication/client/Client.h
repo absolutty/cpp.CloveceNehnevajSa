@@ -17,31 +17,21 @@
 #include <unistd.h>
 
 #include "src/communication/definitions.h"
+#include "src/Hra/HraciaPlocha.h"
+
+typedef struct data {
+    pthread_mutex_t * mut;
+    int sock;
+} DATA;
 
 class Client {
 private:
-    int sock;
+    DATA data;
     struct hostent *server;
     struct sockaddr_in serverAddress;
+    static void *readFromServer(void *arg);
 public:
-    Client(char* hostname, int portNumber) {
-        server = gethostbyname(hostname);
-        if (server == nullptr) {
-            printError((char*)"Server neexistuje.");
-        }
-        if (portNumber <= 0) {
-            printError((char*)"Port musi byt cele cislo vacsie ako 0.");
-        }
-        sock = socket(AF_INET, SOCK_STREAM, 0);
-        if (sock < 0) {
-            printError((char*)"Chyba - socket.");
-        }
-
-        bzero((char *)&serverAddress, sizeof(serverAddress));
-        serverAddress.sin_family = AF_INET;
-        bcopy((char *)server->h_addr, (char *)&serverAddress.sin_addr.s_addr, server->h_length);
-        serverAddress.sin_port = htons(portNumber);
-    }
+    Client(char* hostname, int portNumber);
     ~Client(){
         delete server;
         server = nullptr;

@@ -10,6 +10,7 @@ Hrac::Hrac(char pFarba) {
         domcek[i] = new Policko();
         domcek[i]->getObsah()[0] = ' ';
         domcek[i]->getObsah()[1] = ' ';
+        panaci[i] = 100+i;
     }
 }
 
@@ -29,5 +30,13 @@ Policko *Hrac::getZaciatokDomcekAt(int index) {
 
 Policko *Hrac::getDomcetAt(int index) {
     return domcek[index];
+}
+
+int Hrac::getPanak(int index) {
+    return panaci[index];
+}
+
+void Hrac::setPanak(int index, int pozicia) {
+    panaci[index] = pozicia;
 }
 

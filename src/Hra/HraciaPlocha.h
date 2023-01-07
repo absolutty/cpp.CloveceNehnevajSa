@@ -12,9 +12,12 @@ private:
     Hrac** hraci;
     char farbyHracov[4*sizeof(char)];
 public:
-    explicit HraciaPlocha(int pocetHracov);
+    HraciaPlocha(int pocetHracov);
     ~HraciaPlocha();
     void vykresli();
+    bool tah(char figurka[2], int posun);
+    int getCisloHracaPodlaFarby(char farba);
+    bool skoncilHrac(int hrac);
 };
 
 
