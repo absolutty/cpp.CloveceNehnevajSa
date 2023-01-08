@@ -29,10 +29,10 @@ HraciaPlocha::~HraciaPlocha() {
     delete hraciePole;
 }
 
-bool HraciaPlocha::tah(char *figurka, int posun) {
-    bool tahUspesny = false;
+bool HraciaPlocha::tah(char *figurka, int posun, int hrac) {
     int cisloHraca = getCisloHracaPodlaFarby(figurka[0]);
-    if (cisloHraca == -1) return false;
+    if (cisloHraca != hrac) return false;
+//    if (cisloHraca == -1) return false;
     int cisloFigurky = atoi(&figurka[1]);
     int poziciaFigurky = hraci[cisloHraca]->getPanak(cisloFigurky-1);
     if(poziciaFigurky>=100) {

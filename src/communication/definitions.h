@@ -7,9 +7,7 @@ extern "C" {
 
 #define BUFFER_LENGTH 2600
 extern char *endMsg;
-extern char *infoMsg;
-extern char *tahMsg;
-extern char *okMsg;
+extern char *hodMsg;
 
 void printError(char *str);
 

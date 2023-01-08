@@ -34,7 +34,7 @@ int Kocka::rollDice() {
 
 void* Kocka::distanceToPlanet(void* arg) {
     auto* planeta = static_cast<Planet *>(arg);
-    int randSleep = random(1000000,6000000);
+    int randSleep = random(500000,1000000);
 
     usleep(randSleep);
 //    printf("Planeta %s je vzdialena %dkm\n", planeta->name.c_str(), randSleep);

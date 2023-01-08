@@ -1,7 +1,3 @@
-//
-// Created by adaha on 6. 1. 2023.
-//
-
 #ifndef CLOVECENEHNEVAJSA_CLIENT_H
 #define CLOVECENEHNEVAJSA_CLIENT_H
 
@@ -19,19 +15,18 @@
 #include "src/communication/definitions.h"
 #include "src/Hra/HraciaPlocha.h"
 
-typedef struct data {
+typedef struct dataClient {
     pthread_mutex_t * mut;
-    int sock;
-} DATA;
+    int socket;
+    int stop;
+} DATAC;
 
 class Client {
 private:
-    DATA data;
+    DATAC dataC;
+    pthread_mutex_t mut;
     struct hostent *server;
     struct sockaddr_in serverAddress;
-    static void *readFromServer(void *arg);
-    void vypisInfo(char *buffer);
-    void vlastnyTah(char *buffer);
 public:
     Client(char* hostname, int portNumber);
     ~Client(){
@@ -39,7 +34,8 @@ public:
         server = nullptr;
     }
     int run();
+    static void * funRead(void * arg);
+    static void * funWrite(void * arg);
 };
-
 
 #endif //CLOVECENEHNEVAJSA_CLIENT_H

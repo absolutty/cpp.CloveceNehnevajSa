@@ -1,7 +1,3 @@
-//
-// Created by adaha on 6. 1. 2023.
-//
-
 #include <pthread.h>
 #include "Client.h"
 
@@ -14,118 +10,94 @@ Client::Client(char *hostname, int portNumber) {
     if (portNumber <= 0) {
         printError((char*)"Port musi byt cele cislo vacsie ako 0.");
     }
-    data.sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (data.sock < 0) {
+    mut = PTHREAD_MUTEX_INITIALIZER;
+    dataC = {&mut, -1, 0};
+    dataC.socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (dataC.socket < 0) {
         printError((char*)"Chyba - socket.");
     }
     bzero((char *)&serverAddress, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     bcopy((char *)server->h_addr, (char *)&serverAddress.sin_addr.s_addr, server->h_length);
     serverAddress.sin_port = htons(portNumber);
+
 }
 
 int Client::run() {
-    if (connect(data.sock,(struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
+    if (connect(dataC.socket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
         printError((char*)"Chyba - connect.");
     }
 
+    printf("Spojenie so serverom bolo nadviazane.\nHra sa zacne ked sa pripoja vsetci hraci.\n");
 
-//    pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
-//    data.mut = &mut;
-//    // vlakno pre citanie zo servera
-//    pthread_t thread;
-//    pthread_create(&thread, NULL, readFromServer, &data);
+    // vlakno pre zapisovanie do socketu
+    pthread_t threadWrite;
+    pthread_create(&threadWrite, NULL, funWrite, (void *)&dataC);
+    printf("Vlakno pre zapisovanie vytvorene.\n");
+    //
+    printf("V hlavnom vlakne sa spusta citanie.\n");
+    funRead((void *)&dataC);
+    pthread_join(threadWrite, NULL);
 
-    printf("Spojenie so serverom bolo nadviazane.\n");
-    char buffer[BUFFER_LENGTH + 1];
-    buffer[BUFFER_LENGTH] = '\0';
-    int koniec = 0;
-    while (!koniec) {
-        read(data.sock, buffer, BUFFER_LENGTH);
-        if (strstr(buffer, infoMsg) == buffer && strlen(buffer) == strlen(infoMsg)) {
-            read(data.sock, buffer, BUFFER_LENGTH);
-            printf("%s", buffer);
-        } else if (strstr(buffer, tahMsg) == buffer && strlen(buffer) == strlen(tahMsg)) {
-            read(data.sock, buffer, BUFFER_LENGTH);
-            printf("%s", buffer);
-            bool tahUspesny = false;
-            while (!tahUspesny) {
-                read(data.sock, buffer, BUFFER_LENGTH);
-                if (strstr(buffer, tahMsg) == buffer && strlen(buffer) == strlen(tahMsg)) {
-                fgets(buffer, BUFFER_LENGTH, stdin);
-                write(data.sock, buffer, strlen(buffer) + 1);
-                } else if (strstr(buffer, okMsg) == buffer && strlen(buffer) == strlen(okMsg)) {
-                    tahUspesny = true;
-                }
-            }
-        } else if (strstr(buffer, endMsg) == buffer && strlen(buffer) == strlen(endMsg)) {
-            koniec = true;
-        }
-
-    }
-
-//    while (!koniec) {
-//        fgets(buffer, BUFFER_LENGTH, stdin);
-//        char* pos = strchr(buffer, '\n');
-//        if (pos != nullptr) {
-//            *pos = '\0';
-//        }
-//        //zapis dat do socketu <unistd.h>
-//        write(data.sock, buffer, strlen(buffer) + 1);
-//        if (strcmp(buffer, endMsg) != 0) {
-//            //citanie dat zo socketu <unistd.h>
-//            read(data.sock, buffer, BUFFER_LENGTH);
-//            printf("Server poslal nasledujuce data:\n%s\n", buffer);
-//        }
-//        else {
-//            koniec = 1;
-//        }
-//    }
     //uzavretie socketu <unistd.h>
-    close(data.sock);
+    close(dataC.socket);
     printf("Spojenie so serverom bolo ukoncene.\n");
-//    pthread_mutex_destroy(&mut);
     return (EXIT_SUCCESS);
 }
 
-void * Client::readFromServer(void *arg) {
-    DATA * data = (DATA *)arg;
+void *Client::funRead(void *arg) {
+    printf("starting read thread\n");
+
+    DATAC * data = (DATAC*)arg;
     char buffer[BUFFER_LENGTH + 1];
     buffer[BUFFER_LENGTH] = '\0';
-    read(data->sock, buffer, BUFFER_LENGTH);
-    printf("%s",buffer);
+    pthread_mutex_lock(data->mut);
+    bool koniec = data->stop;
+    pthread_mutex_unlock(data->mut);
+    while(!koniec) {
+        if(read(data->socket, buffer, BUFFER_LENGTH) > 0) {
+            if (strcmp(buffer, endMsg) == 0) {
+                pthread_mutex_lock(data->mut);
+                data->stop = true;
+                pthread_mutex_unlock(data->mut);
+                koniec = true;
+            } else {
+                printf("%s", buffer);
+            }
+        } else {
+            pthread_mutex_lock(data->mut);
+            data->stop = true;
+            pthread_mutex_unlock(data->mut);
+            koniec = true;
+        }
+    }
     return nullptr;
 }
 
-void Client::vypisInfo(char *buffer) {
-    read(data.sock, buffer, BUFFER_LENGTH);
-    printf("%s", buffer);
-}
+void *Client::funWrite(void *arg) {
+    printf("starting write thread\n");
 
-void Client::vlastnyTah(char *buffer) {
-    read(data.sock, buffer, BUFFER_LENGTH);
-    printf("%s", buffer);
-    bool tahUspesny = false;
-    while (!tahUspesny) {
+    DATAC * data = (DATAC*)arg;
+    char buffer[BUFFER_LENGTH + 1];
+    buffer[BUFFER_LENGTH] = '\0';
+    pthread_mutex_lock(data->mut);
+    bool koniec = data->stop;
+    pthread_mutex_unlock(data->mut);
+    while(!koniec) {
         fgets(buffer, BUFFER_LENGTH, stdin);
-        write(data.sock, buffer, strlen(buffer) + 1);
-        read(data.sock, buffer, BUFFER_LENGTH);
-        if (strstr(buffer, okMsg) == buffer && strlen(buffer) == strlen(okMsg)) {
-            tahUspesny = true;
-            continue;
+        pthread_mutex_lock(data->mut);
+        write(data->socket, buffer, strlen(buffer) + 1);
+        pthread_mutex_unlock(data->mut);
+        if (strcmp(buffer, endMsg) == 0) {
+            pthread_mutex_lock(data->mut);
+            data->stop = true;
+            pthread_mutex_unlock(data->mut);
+        } else {
+            printf("%s",buffer);
         }
+        pthread_mutex_lock(data->mut);
+        koniec = data->stop;
+        pthread_mutex_unlock(data->mut);
     }
+    return nullptr;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
