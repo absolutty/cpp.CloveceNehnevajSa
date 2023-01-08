@@ -9,12 +9,14 @@
 #include <netinet/in.h>
 #include "src/communication/definitions.h"
 #include "src/Hra/HraciaPlocha.h"
+#include "src/helpers/Kocka.h"
 
 class Server {
 private:
     int pocetHracov;
     int serverSocket = -1;
     HraciaPlocha* hraciaPlocha;
+    Kocka* kocka;
     struct sockaddr_in serverAddress{};
     char* spracujData(char *data);
 public:

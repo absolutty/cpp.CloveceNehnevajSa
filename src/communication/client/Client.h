@@ -30,6 +30,8 @@ private:
     struct hostent *server;
     struct sockaddr_in serverAddress;
     static void *readFromServer(void *arg);
+    void vypisInfo(char *buffer);
+    void vlastnyTah(char *buffer);
 public:
     Client(char* hostname, int portNumber);
     ~Client(){

@@ -13,7 +13,7 @@ HraciaPlocha::HraciaPlocha(int pocetHracov) {
         hraciePole[i]->getObsah()[0] = ' ';
         hraciePole[i]->getObsah()[1] = ' ';
     }
-    for (int i = 0; i < aPocetHracov; ++i) {
+    for (int i = 0; i < 4; ++i) {
         hraci[i] = new Hrac(farbyHracov[i]);
         for (int j = 0; j < 4; ++j) {
             (hraci[i]->getZaciatokDomcekAt(j)->getObsah())[0] = hraci[i]->getFarba();
@@ -99,8 +99,24 @@ bool HraciaPlocha::skoncilHrac(int hrac) {
     return true;
 }
 
-void HraciaPlocha::vykresli() {
-    printf("┌────┬────┐         ┌────┬────┬────┐         ┌────┬────┐\n"
+bool HraciaPlocha::maFigurkyNaZaciatkuHrac(int hrac) {
+    for (int i = 0; i < 4; ++i) {
+        if (hraci[hrac]->getZaciatokDomcekAt(i)->getObsah()[0] == ' ') {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool HraciaPlocha::mozeTahatHrac(int hrac, int posun) {
+    if ((!skoncilHrac(hrac) && !maFigurkyNaZaciatkuHrac(hrac)) || (maFigurkyNaZaciatkuHrac(hrac) && posun == 6)) {
+        return true;
+    }
+    return false;
+}
+
+void HraciaPlocha::toCharArray(char *vystup) {
+    sprintf(vystup, "┌────┬────┐         ┌────┬────┬────┐         ┌────┬────┐\n"
            "│ %s │ %s │         │ %s │ %s │ %s │ ↓       │ %s │ %s │\n" // riadok 1
            "├────┼────┤         ├────╔────╗────┤         ├────┼────┤\n"
            "│ %s │ %s │         │ %s ║ %s ║ %s │         │ %s │ %s │\n" // riadok 2

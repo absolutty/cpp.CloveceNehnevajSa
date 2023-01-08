@@ -5,6 +5,9 @@
 #include <errno.h>
 
 char *endMsg = ":end";
+char *infoMsg = ":info";
+char *tahMsg = ":tah";
+char *okMsg = ":ok";
 
 void printError(char *str) {
     if (errno != 0) {

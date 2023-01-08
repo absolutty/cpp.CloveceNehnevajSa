@@ -19,7 +19,9 @@ add_executable(main-server src/main-server.cpp
         src/Hra/Hrac.cpp
         src/Hra/Hrac.h
         src/Hra/Policko.cpp
-        src/Hra/Policko.h)
+        src/Hra/Policko.h
+        src/helpers/Kocka.cpp
+        src/helpers/Kocka.h)
 
 add_executable(main-client src/main-client.cpp
         src/communication/client/Client.cpp
@@ -33,3 +35,4 @@ add_executable(main-kocka src/helpers/Kocka.cpp src/helpers/Kocka.h src/main-koc
 
 target_link_libraries(CloveceNehnevajSa pthread m)
 target_link_libraries(main-kocka pthread m)
+target_link_libraries(main-server pthread m)

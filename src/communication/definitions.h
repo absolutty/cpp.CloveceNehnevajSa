@@ -5,8 +5,11 @@
 extern "C" {
 #endif
 
-#define BUFFER_LENGTH 300
+#define BUFFER_LENGTH 2600
 extern char *endMsg;
+extern char *infoMsg;
+extern char *tahMsg;
+extern char *okMsg;
 
 void printError(char *str);
 

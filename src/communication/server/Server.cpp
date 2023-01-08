@@ -27,10 +27,12 @@ Server::Server(int pPocetHracov, int portNumber) {
     serverAddress.sin_addr.s_addr = INADDR_ANY;
     serverAddress.sin_port = htons(portNumber);
     hraciaPlocha = new HraciaPlocha(pocetHracov);
+    kocka = new Kocka();
 }
 
 Server::~Server() {
     delete hraciaPlocha;
+    delete kocka;
 }
 
 int Server::run() {
@@ -67,25 +69,95 @@ int Server::run() {
 //    }
 
     printf("Vsetci klienti sa pripojili na server.\n");
+
+    int jeNaRade = 0;
     char buffer[BUFFER_LENGTH + 1];
     buffer[BUFFER_LENGTH] = '\0';
-    int koniec = 0;
+    bool koniec = false;
     while (!koniec) {
-        for(int i=0; i < pocetHracov; i++) {
-            //citanie dat zo socketu <unistd.h>
-            read(poleSocketov[i], buffer, BUFFER_LENGTH);
-            if (strcmp(buffer, endMsg) != 0) {
-                printf("Klient%d. poslal nasledujuce data:\n%s\n", (i+1), buffer);
-                spracujData(buffer);
-                //zapis dat do socketu <unistd.h>
+        hraciaPlocha->toCharArray(buffer);
+        for (int i = 0; i < pocetHracov; ++i) {
+            if (poleSocketov[i]) {
+                write(poleSocketov[i], infoMsg, strlen(infoMsg) + 1);
+                usleep(1000);
                 write(poleSocketov[i], buffer, strlen(buffer) + 1);
             }
-            else {
-                koniec = 1;
-            }
         }
+        while (!koniec) {
+            if (poleSocketov[jeNaRade]) {
+                if (hraciaPlocha->skoncilHrac(jeNaRade)) {
+                    jeNaRade = (jeNaRade + 1) % pocetHracov;
+                    koniec = true;
+                    continue;
+                }
+                for (int i = 0; i < pocetHracov; ++i) {
+                    if (poleSocketov[i]) {
+                        write(poleSocketov[i], infoMsg, strlen(infoMsg) + 1);
+                        usleep(1000);
+                        if (jeNaRade == i) {
+                            sprintf(buffer, "Si na rade.\n");
+                            write(poleSocketov[i], buffer, strlen(buffer) + 1);
+                        } else {
+                            sprintf(buffer, "Na rade je hrac %d\n", jeNaRade + 1);
+                            write(poleSocketov[i], buffer, strlen(buffer) + 1);
+                        }
+                    }
+                }
+                bool tahUspesny = false;
+                int hodeneCislo = kocka->rollDice();
+                write(poleSocketov[jeNaRade], tahMsg, strlen(tahMsg) + 1);
+                usleep(1000);
+                sprintf(buffer, "Hodil si %d\n",hodeneCislo);
+                write(poleSocketov[jeNaRade], buffer, strlen(buffer)+1);
+                if (hraciaPlocha->mozeTahatHrac(jeNaRade, hodeneCislo)) {
+                    while (!tahUspesny) {
+                        usleep(1000);
+                        write(poleSocketov[jeNaRade], tahMsg, strlen(tahMsg) + 1);
+                        read(poleSocketov[jeNaRade], buffer, BUFFER_LENGTH);
+                        tahUspesny = hraciaPlocha->tah(buffer, hodeneCislo);
+                    }
+                }
+                usleep(1000);
+                write(poleSocketov[jeNaRade], okMsg, strlen(okMsg) + 1);
+                for (int i = 0; i < pocetHracov; ++i) {
+                    hraciaPlocha->toCharArray(buffer);
+                    if (poleSocketov[i]) {
+                        usleep(1000);
+                        write(poleSocketov[i], infoMsg, strlen(infoMsg) + 1);
+                        usleep(1000);
+                        write(poleSocketov[i], buffer, strlen(buffer) + 1);
+                    }
+                }
+            }
+            if (hraciaPlocha->skoncilHrac(jeNaRade)) {
+                sprintf(buffer, "Dohral si hru.");
+                write(poleSocketov[jeNaRade], buffer, strlen(buffer)+1);
+            }
+            jeNaRade = (jeNaRade+1)%pocetHracov;
+        }
+
     }
-    printf("Klient ukoncil komunikaciu.\n");
+
+
+//    char buffer[BUFFER_LENGTH + 1];
+//    buffer[BUFFER_LENGTH] = '\0';
+//    int koniec = 0;
+//    while (!koniec) {
+//        for(int i=0; i < pocetHracov; i++) {
+//            //citanie dat zo socketu <unistd.h>
+//            read(poleSocketov[i], buffer, BUFFER_LENGTH);
+//            if (strcmp(buffer, endMsg) != 0) {
+//                printf("Klient%d. poslal nasledujuce data:\n%s\n", (i+1), buffer);
+//                spracujData(buffer);
+//                //zapis dat do socketu <unistd.h>
+//                write(poleSocketov[i], buffer, strlen(buffer) + 1);
+//            }
+//            else {
+//                koniec = 1;
+//            }
+//        }
+//    }
+//    printf("Klient ukoncil komunikaciu.\n");
 
     //uzavretie socketu klienta <unistd.h>
     for(int i=0; i < pocetHracov; i++) {

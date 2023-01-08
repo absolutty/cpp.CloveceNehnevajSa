@@ -29,38 +29,62 @@ int Client::run() {
         printError((char*)"Chyba - connect.");
     }
 
+
+//    pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+//    data.mut = &mut;
+//    // vlakno pre citanie zo servera
+//    pthread_t thread;
+//    pthread_create(&thread, NULL, readFromServer, &data);
+
     printf("Spojenie so serverom bolo nadviazane.\n");
     char buffer[BUFFER_LENGTH + 1];
     buffer[BUFFER_LENGTH] = '\0';
     int koniec = 0;
-
-    pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
-    data.mut = &mut;
-    // vlakno pre citanie zo servera
-    pthread_t thread;
-    pthread_create(&thread, NULL, readFromServer, &data);
-
     while (!koniec) {
-        fgets(buffer, BUFFER_LENGTH, stdin);
-        char* pos = strchr(buffer, '\n');
-        if (pos != nullptr) {
-            *pos = '\0';
-        }
-        //zapis dat do socketu <unistd.h>
-        write(data.sock, buffer, strlen(buffer) + 1);
-        if (strcmp(buffer, endMsg) != 0) {
-            //citanie dat zo socketu <unistd.h>
+        read(data.sock, buffer, BUFFER_LENGTH);
+        if (strstr(buffer, infoMsg) == buffer && strlen(buffer) == strlen(infoMsg)) {
             read(data.sock, buffer, BUFFER_LENGTH);
-            printf("Server poslal nasledujuce data:\n%s\n", buffer);
+            printf("%s", buffer);
+        } else if (strstr(buffer, tahMsg) == buffer && strlen(buffer) == strlen(tahMsg)) {
+            read(data.sock, buffer, BUFFER_LENGTH);
+            printf("%s", buffer);
+            bool tahUspesny = false;
+            while (!tahUspesny) {
+                read(data.sock, buffer, BUFFER_LENGTH);
+                if (strstr(buffer, tahMsg) == buffer && strlen(buffer) == strlen(tahMsg)) {
+                fgets(buffer, BUFFER_LENGTH, stdin);
+                write(data.sock, buffer, strlen(buffer) + 1);
+                } else if (strstr(buffer, okMsg) == buffer && strlen(buffer) == strlen(okMsg)) {
+                    tahUspesny = true;
+                }
+            }
+        } else if (strstr(buffer, endMsg) == buffer && strlen(buffer) == strlen(endMsg)) {
+            koniec = true;
         }
-        else {
-            koniec = 1;
-        }
+
     }
+
+//    while (!koniec) {
+//        fgets(buffer, BUFFER_LENGTH, stdin);
+//        char* pos = strchr(buffer, '\n');
+//        if (pos != nullptr) {
+//            *pos = '\0';
+//        }
+//        //zapis dat do socketu <unistd.h>
+//        write(data.sock, buffer, strlen(buffer) + 1);
+//        if (strcmp(buffer, endMsg) != 0) {
+//            //citanie dat zo socketu <unistd.h>
+//            read(data.sock, buffer, BUFFER_LENGTH);
+//            printf("Server poslal nasledujuce data:\n%s\n", buffer);
+//        }
+//        else {
+//            koniec = 1;
+//        }
+//    }
     //uzavretie socketu <unistd.h>
     close(data.sock);
     printf("Spojenie so serverom bolo ukoncene.\n");
-    pthread_mutex_destroy(&mut);
+//    pthread_mutex_destroy(&mut);
     return (EXIT_SUCCESS);
 }
 
@@ -72,3 +96,36 @@ void * Client::readFromServer(void *arg) {
     printf("%s",buffer);
     return nullptr;
 }
+
+void Client::vypisInfo(char *buffer) {
+    read(data.sock, buffer, BUFFER_LENGTH);
+    printf("%s", buffer);
+}
+
+void Client::vlastnyTah(char *buffer) {
+    read(data.sock, buffer, BUFFER_LENGTH);
+    printf("%s", buffer);
+    bool tahUspesny = false;
+    while (!tahUspesny) {
+        fgets(buffer, BUFFER_LENGTH, stdin);
+        write(data.sock, buffer, strlen(buffer) + 1);
+        read(data.sock, buffer, BUFFER_LENGTH);
+        if (strstr(buffer, okMsg) == buffer && strlen(buffer) == strlen(okMsg)) {
+            tahUspesny = true;
+            continue;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,10 +14,12 @@ private:
 public:
     HraciaPlocha(int pocetHracov);
     ~HraciaPlocha();
-    void vykresli();
+    void toCharArray(char *vystup);
     bool tah(char figurka[2], int posun);
     int getCisloHracaPodlaFarby(char farba);
     bool skoncilHrac(int hrac);
+    bool maFigurkyNaZaciatkuHrac(int hrac);
+    bool mozeTahatHrac(int hrac, int posun);
 };
 
 
