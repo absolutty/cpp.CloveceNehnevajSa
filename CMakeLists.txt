@@ -13,7 +13,15 @@ add_executable(main-server src/main-server.cpp
         src/communication/server/Server.cpp
         src/communication/server/Server.h
         src/communication/definitions.c
-        src/communication/definitions.h)
+        src/communication/definitions.h
+        src/Hra/HraciaPlocha.cpp
+        src/Hra/HraciaPlocha.h
+        src/Hra/Hrac.cpp
+        src/Hra/Hrac.h
+        src/Hra/Policko.cpp
+        src/Hra/Policko.h
+        src/helpers/Kocka.cpp
+        src/helpers/Kocka.h)
 
 add_executable(main-client src/main-client.cpp
         src/communication/client/Client.cpp
@@ -21,7 +29,10 @@ add_executable(main-client src/main-client.cpp
         src/communication/definitions.c
         src/communication/definitions.h)
 
+target_link_libraries(main-client pthread m)
+
 add_executable(main-kocka src/helpers/Kocka.cpp src/helpers/Kocka.h src/main-kocka.cpp)
 
 target_link_libraries(CloveceNehnevajSa pthread m)
 target_link_libraries(main-kocka pthread m)
+target_link_libraries(main-server pthread m)

@@ -15,6 +15,8 @@ public:
     ~Hrac();
     Policko * getZaciatokDomcekAt(int index);
     Policko * getDomcetAt(int index);
+    int getPanak(int index);
+    void setPanak(int intex, int pozicia);
     inline char getFarba(){return farba;};
 };
 

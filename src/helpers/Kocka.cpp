@@ -19,14 +19,14 @@ int Kocka::rollDice() {
         pthread_join(i, nullptr);
     }
 
-    std::cout << "Pri hode kockou rozhoduje planeta [" << lastPlanet->name << "]: ";
+//    std::cout << "Pri hode kockou rozhoduje planeta [" << lastPlanet->name << "]: ";
 
     int randomPercentage = random(0, 100);
     int hodeneCislo, sucty=0;
     for (hodeneCislo=0; sucty<randomPercentage; hodeneCislo++) {
         sucty+= lastPlanet->probabilities[hodeneCislo];
     }
-    std::cout << "padlo cislo " << hodeneCislo << std::endl;
+//    std::cout << "padlo cislo " << hodeneCislo << std::endl;
 
     lastPlanet = nullptr;
     return hodeneCislo;
@@ -34,10 +34,10 @@ int Kocka::rollDice() {
 
 void* Kocka::distanceToPlanet(void* arg) {
     auto* planeta = static_cast<Planet *>(arg);
-    int randSleep = random(1000000,6000000);
+    int randSleep = random(500000,1000000);
 
     usleep(randSleep);
-    printf("Planeta %s je vzdialena %dkm\n", planeta->name.c_str(), randSleep);
+//    printf("Planeta %s je vzdialena %dkm\n", planeta->name.c_str(), randSleep);
     lastPlanet = planeta;
 
     return nullptr;
@@ -60,4 +60,14 @@ void Kocka::initializePlanets() {
     arrPlanets[6].probabilities = new int[N_of_NUMBERS_ON_DICE]{20, 25, 30, 10, 5, 10};
     arrPlanets[7].name = "Neptun";
     arrPlanets[7].probabilities = new int[N_of_NUMBERS_ON_DICE]{30, 30, 10, 20, 5, 5};
+}
+
+Kocka::Kocka() {
+    initializePlanets();
+}
+
+Kocka::~Kocka() {
+    for (int i = 0; i < 8; ++i) {
+        delete arrPlanets[i].probabilities;
+    }
 }
