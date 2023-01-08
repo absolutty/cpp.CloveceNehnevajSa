@@ -28,6 +28,7 @@ Server::Server(int pPocetHracov, int portNumber) {
 Server::~Server() {
     delete dataS.hraciaPlocha;
     delete dataS.kocka;
+    pthread_mutex_destroy(&mut);
 }
 
 int Server::run() {
@@ -115,11 +116,11 @@ void *Server::funClientService(void *arg) {
             dataT->stop = true;
             continue;
 //        } else if (strcmp(buffer, "hod") != 0) {
-//        } else if (strstr(buffer, hodMsg) == buffer) {
-//            sprintf(buffer, "Neznamy prikaz, ak si na rade zadaj 'hod' pre hodenie kockou.\n");
-//            usleep(100);
-//            write(dataT->socket,buffer, strlen(buffer)+1);
-//            continue;
+        } else if (strstr(buffer, hodMsg) != buffer) {
+            sprintf(buffer, "Neznamy prikaz, ak si na rade zadaj 'hod' pre hodenie kockou.\n");
+            usleep(100);
+            write(dataT->socket,buffer, strlen(buffer)+1);
+            continue;
         }
         if (naRade != dataT->cisloHraca) {
             sprintf(buffer, "Nie si na rade, na rade je hrac c. %d\n",naRade+1);

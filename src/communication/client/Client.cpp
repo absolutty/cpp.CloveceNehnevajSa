@@ -23,6 +23,12 @@ Client::Client(char *hostname, int portNumber) {
 
 }
 
+Client::~Client() {
+    delete server;
+    server = nullptr;
+    pthread_mutex_destroy(&mut);
+}
+
 int Client::run() {
     if (connect(dataC.socket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
         printError((char*)"Chyba - connect.");
@@ -88,7 +94,7 @@ void *Client::funWrite(void *arg) {
         pthread_mutex_lock(data->mut);
         write(data->socket, buffer, strlen(buffer) + 1);
         pthread_mutex_unlock(data->mut);
-        if (strcmp(buffer, endMsg) == 0) {
+        if (strstr(buffer, endMsg) == buffer) {
             pthread_mutex_lock(data->mut);
             data->stop = true;
             pthread_mutex_unlock(data->mut);

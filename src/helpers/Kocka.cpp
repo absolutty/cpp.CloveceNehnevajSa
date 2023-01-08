@@ -65,3 +65,9 @@ void Kocka::initializePlanets() {
 Kocka::Kocka() {
     initializePlanets();
 }
+
+Kocka::~Kocka() {
+    for (int i = 0; i < 8; ++i) {
+        delete arrPlanets[i].probabilities;
+    }
+}

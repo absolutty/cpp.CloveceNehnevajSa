@@ -27,6 +27,7 @@ private:
     static Planet* lastPlanet;
 public:
     Kocka();
+    ~Kocka();
     int rollDice();
     static void* distanceToPlanet(void* arg);
     static int random(int min, int max) {

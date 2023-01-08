@@ -29,10 +29,7 @@ private:
     struct sockaddr_in serverAddress;
 public:
     Client(char* hostname, int portNumber);
-    ~Client(){
-        delete server;
-        server = nullptr;
-    }
+    ~Client();
     int run();
     static void * funRead(void * arg);
     static void * funWrite(void * arg);

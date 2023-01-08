@@ -27,26 +27,32 @@ HraciaPlocha::~HraciaPlocha() {
         delete hraciePole[i];
     }
     delete hraciePole;
+    for (int i = 0; i < 4; ++i) {
+        delete hraci[i];
+    }
+    delete hraci;
 }
 
 bool HraciaPlocha::tah(char *figurka, int posun, int hrac) {
     int cisloHraca = getCisloHracaPodlaFarby(figurka[0]);
     if (cisloHraca != hrac) return false;
-//    if (cisloHraca == -1) return false;
     int cisloFigurky = atoi(&figurka[1]);
     int poziciaFigurky = hraci[cisloHraca]->getPanak(cisloFigurky-1);
     if(poziciaFigurky>=100) {
         if (posun < 6) {
             return false;
         }
-        if (hraciePole[(cisloHraca*10+30)%40]->getObsah()[0] == ' ') {
-            hraci[cisloHraca]->setPanak(cisloFigurky-1,(cisloHraca*10+30)%40);
-            hraci[cisloHraca]->getZaciatokDomcekAt(cisloFigurky-1)->getObsah()[0] = ' ';
-            hraci[cisloHraca]->getZaciatokDomcekAt(cisloFigurky-1)->getObsah()[1] = ' ';
-            hraciePole[(cisloHraca*10+30)%40]->getObsah()[0] = farbyHracov[cisloHraca];
-            hraciePole[(cisloHraca*10+30)%40]->getObsah()[1] = '0'+cisloFigurky;
+        if (hraciePole[(cisloHraca*10+30)%40]->getObsah()[0] != ' ') {
+            int hrac = getCisloHracaPodlaFarby(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[0]);
+            hraci[hrac]->getZaciatokDomcekAt(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1)->getObsah()[0] = hraciePole[(poziciaFigurky+posun)%40]->getObsah()[0];
+            hraci[hrac]->getZaciatokDomcekAt(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1)->getObsah()[1] = hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1];
+            hraci[hrac]->setPanak(hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1,100+hraciePole[(poziciaFigurky+posun)%40]->getObsah()[1]-'0'-1);
         }
-//    } else if (/*poziciaFigurky>=((cisloHraca*10+30)%40) &&*/ poziciaFigurky>=(cisloHraca*10+30-posun)%40) {
+        hraci[cisloHraca]->setPanak(cisloFigurky-1,(cisloHraca*10+30)%40);
+        hraci[cisloHraca]->getZaciatokDomcekAt(cisloFigurky-1)->getObsah()[0] = ' ';
+        hraci[cisloHraca]->getZaciatokDomcekAt(cisloFigurky-1)->getObsah()[1] = ' ';
+        hraciePole[(cisloHraca*10+30)%40]->getObsah()[0] = farbyHracov[cisloHraca];
+        hraciePole[(cisloHraca*10+30)%40]->getObsah()[1] = '0'+cisloFigurky;
     } else if (poziciaFigurky>(cisloHraca*10+29)%40-posun && poziciaFigurky<(cisloHraca*10+29)%40+1) {
         hraciePole[poziciaFigurky]->getObsah()[0] = ' ';
         hraciePole[poziciaFigurky]->getObsah()[1] = ' ';
