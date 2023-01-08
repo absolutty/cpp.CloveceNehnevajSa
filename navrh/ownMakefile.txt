@@ -1,0 +1,28 @@
+#change based on current user compiling it it
+PROJECT_LOCATION = /home/hajro/tmp/tmp.GioGnkGHf2
+SOURCE_DIR = /src
+
+OUTPUTS = main-server client
+CC = gcc
+
+all: $(OUTPUTS)
+
+clean:
+	rm -f *.o *~
+
+.PHONY: all clean
+
+main-server: main-server.o communication/definitions.o Hra/HraciaPlocha.o helpers/Kocka.o
+	gcc main-server.o communication/definitions.o Hra/HraciaPlocha.o helpers/Kocka.o  pthread -o main-server
+
+client: main-client.o communication/definitions.o Hra/HraciaPlocha.o
+	gcc client main-client.o communication/definitions.o Hra/HraciaPlocha.o -o client
+
+client.o:
+	gcc Hra/Policko.h Hra/Hrac.h
+
+main-server.o:
+	gcc Hra/HraciaPlocha.h helpers/Kocka.h
+
+.o: *.c
+	gcc $< -c
